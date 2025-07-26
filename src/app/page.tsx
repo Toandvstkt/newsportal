@@ -17,7 +17,7 @@ export default function HomePage() {
   useEffect(() => {
     setIsVisible(true);
     
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e:MouseEvent) => {
       setMousePos({ x: e.clientX, y: e.clientY });
     };
     
@@ -25,7 +25,7 @@ export default function HomePage() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  const FloatingParticle = ({ delay, duration, size }) => (
+  const FloatingParticle = ({ delay, duration, size }: { delay: number; duration: number; size: string }) => (
     <div 
       className={`absolute bg-white opacity-20 rounded-full animate-pulse`}
       style={{
