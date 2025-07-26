@@ -9,8 +9,12 @@ import { useRouter } from 'next/navigation';
 export default function AdminUsersPage() {
   const { user, hasRole } = useAuth();
   const router = useRouter();
-  const [usersList, setUsersList] = useState(users);
-  const [filteredUsers, setFilteredUsers] = useState(users);
+  
+
+  const safeUsers = Array.isArray(users) ? users.filter(u => u && u.id) : [];
+  
+  const [usersList, setUsersList] = useState(safeUsers);
+  const [filteredUsers, setFilteredUsers] = useState(safeUsers);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -23,17 +27,17 @@ export default function AdminUsersPage() {
   });
 
   useEffect(() => {
-    let filtered = usersList;
+    let filtered = usersList.filter(u => u && u.id)
     
     if (searchTerm) {
       filtered = filtered.filter(u => 
-        u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.email.toLowerCase().includes(searchTerm.toLowerCase())
+        u?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        u?.email?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
     
     if (filterRole !== 'all') {
-      filtered = filtered.filter(u => u.role === filterRole);
+      filtered = filtered.filter(u => u?.role === filterRole);
     }
     
     setFilteredUsers(filtered);
@@ -42,13 +46,15 @@ export default function AdminUsersPage() {
   const handleCreateUser = () => {
     if (!newUser.name || !newUser.email || !newUser.password) return;
     
-    const userId = Math.max(...usersList.map(u => u.id)) + 1;
+    const existingIds = usersList.filter(u => u && u.id).map(u => u.id);
+    const userId = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;
+    
     const createdUser = {
       ...newUser,
       id: userId,
       avatar: `/images/avatars/user${userId}.jpg`,
       createdAt: new Date().toISOString().split('T')[0],
-      permissions: roles[newUser.role].permissions
+      permissions: roles?.[newUser.role]?.permissions || []
     };
     
     setUsersList([...usersList, createdUser]);
@@ -57,25 +63,29 @@ export default function AdminUsersPage() {
   };
 
   const handleEditUser = (userToEdit) => {
-    setEditingUser({ ...userToEdit });
+    if (userToEdit && userToEdit.id) {
+      setEditingUser({ ...userToEdit });
+    }
   };
 
   const handleUpdateUser = () => {
+    if (!editingUser || !editingUser.id) return;
+    
     setUsersList(usersList.map(u => 
-      u.id === editingUser.id 
-        ? { ...editingUser, permissions: roles[editingUser.role].permissions }
+      u && u.id === editingUser.id 
+        ? { ...editingUser, permissions: roles?.[editingUser.role]?.permissions || [] }
         : u
     ));
     setEditingUser(null);
   };
 
   const handleDeleteUser = (userId) => {
-    if (userId === user.id) {
+    if (!userId || userId === user?.id) {
       alert('Không thể xóa tài khoản của chính mình!');
       return;
     }
     if (window.confirm('Bạn có chắc muốn xóa người dùng này?')) {
-      setUsersList(usersList.filter(u => u.id !== userId));
+      setUsersList(usersList.filter(u => u && u.id !== userId));
     }
   };
 
@@ -88,6 +98,9 @@ export default function AdminUsersPage() {
     };
     return colors[role] || colors.guest;
   };
+
+
+  const safeRoles = roles || {};
 
   return (
     <ProtectedRoute requiredRole="admin">
@@ -150,29 +163,29 @@ export default function AdminUsersPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-700/50">
-                  {filteredUsers.map((u) => (
+                  {filteredUsers.length > 0 ? filteredUsers.map((u) => (
                     <tr key={u.id} className="hover:bg-slate-700/30">
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-3">
                           <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium">
-                            {u.name.charAt(0)}
+                            {u.name?.charAt(0) || '?'}
                           </div>
                           <div>
-                            <div className="font-medium text-white">{u.name}</div>
-                            <div className="text-sm text-gray-400">{u.email}</div>
+                            <div className="font-medium text-white">{u.name || 'Không có tên'}</div>
+                            <div className="text-sm text-gray-400">{u.email || 'Không có email'}</div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getRoleColor(u.role)}`}>
-                          {u.role.toUpperCase()}
+                          {u.role?.toUpperCase() || 'GUEST'}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-300">
-                        {new Date(u.createdAt).toLocaleDateString('vi-VN')}
+                        {u.createdAt ? new Date(u.createdAt).toLocaleDateString('vi-VN') : 'Không có dữ liệu'}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-300">
-                        {u.permissions.length} quyền
+                        {u.permissions?.length || 0} quyền
                       </td>
                       <td className="px-6 py-4 text-center">
                         <div className="flex justify-center space-x-2">
@@ -182,7 +195,7 @@ export default function AdminUsersPage() {
                           >
                             Sửa
                           </button>
-                          {u.id !== user.id && (
+                          {u.id !== user?.id && (
                             <button
                               onClick={() => handleDeleteUser(u.id)}
                               className="px-3 py-1 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded text-sm transition-colors"
@@ -193,7 +206,13 @@ export default function AdminUsersPage() {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                  )) : (
+                    <tr>
+                      <td colSpan="5" className="px-6 py-8 text-center text-gray-400">
+                        Không có người dùng nào
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -205,15 +224,15 @@ export default function AdminUsersPage() {
               <div className="text-sm text-gray-400">Tổng người dùng</div>
             </div>
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
-              <div className="text-3xl font-bold text-red-400">{usersList.filter(u => u.role === 'admin').length}</div>
+              <div className="text-3xl font-bold text-red-400">{usersList.filter(u => u?.role === 'admin').length}</div>
               <div className="text-sm text-gray-400">Admin</div>
             </div>
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
-              <div className="text-3xl font-bold text-blue-400">{usersList.filter(u => u.role === 'editor').length}</div>
+              <div className="text-3xl font-bold text-blue-400">{usersList.filter(u => u?.role === 'editor').length}</div>
               <div className="text-sm text-gray-400">Editor</div>
             </div>
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
-              <div className="text-3xl font-bold text-green-400">{usersList.filter(u => u.role === 'registered').length}</div>
+              <div className="text-3xl font-bold text-green-400">{usersList.filter(u => u?.role === 'registered').length}</div>
               <div className="text-sm text-gray-400">Registered</div>
             </div>
           </div>
@@ -281,18 +300,18 @@ export default function AdminUsersPage() {
               <div className="space-y-4">
                 <input
                   type="text"
-                  value={editingUser.name}
+                  value={editingUser.name || ''}
                   onChange={(e) => setEditingUser({...editingUser, name: e.target.value})}
                   className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
                 />
                 <input
                   type="email"
-                  value={editingUser.email}
+                  value={editingUser.email || ''}
                   onChange={(e) => setEditingUser({...editingUser, email: e.target.value})}
                   className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
                 />
                 <select
-                  value={editingUser.role}
+                  value={editingUser.role || 'guest'}
                   onChange={(e) => setEditingUser({...editingUser, role: e.target.value})}
                   className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
                 >
@@ -302,7 +321,7 @@ export default function AdminUsersPage() {
                   <option value="guest">Guest</option>
                 </select>
                 <div className="text-sm text-gray-400">
-                  Quyền: {roles[editingUser.role].permissions.length} quyền
+                  Quyền: {safeRoles[editingUser.role]?.permissions?.length || 0} quyền
                 </div>
               </div>
               <div className="flex justify-end space-x-3 mt-6">
