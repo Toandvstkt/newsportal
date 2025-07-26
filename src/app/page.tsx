@@ -287,7 +287,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             {user ? (
               <>
-                <a
+                <Link
                   href="/news"
                   className="group relative overflow-hidden px-8 py-4 rounded-2xl transition-all duration-500 transform hover:scale-110 hover:rotate-1"
                 >
@@ -296,7 +296,7 @@ export default function HomePage() {
                   <span className="relative text-white font-bold text-lg">
                     Đọc tin tức ngay
                   </span>
-                </a>
+                </Link>
                 
                 <div className="text-gray-400 animate-bounce">hoặc</div>
                 
