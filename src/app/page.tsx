@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 
+import Link from 'next/link'
+
 export default function HomePage() {
   const [isVisible, setIsVisible] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -108,7 +110,7 @@ export default function HomePage() {
           
           {user ? (
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <a
+              <Link
                 href="/news"
                 className="group relative inline-block"
               >
@@ -119,17 +121,17 @@ export default function HomePage() {
                   </span>
                   <span className="ml-2 transform group-hover:translate-x-1 transition duration-300">→</span>
                 </div>
-              </a>
+              </Link>
               
-              <a
+              <Link
                 href="/bookmarks"
                 className="group px-8 py-4 border-2 border-purple-400/50 rounded-2xl text-purple-300 hover:text-white hover:border-purple-400 transition-all duration-500 transform hover:scale-105"
               >
                 Tin đã lưu
-              </a>
+              </Link>
             </div>
           ) : (
-            <a
+            <Link
               href="/login"
               className="group relative inline-block"
             >
@@ -140,7 +142,7 @@ export default function HomePage() {
                 </span>
                 <span className="ml-2 transform group-hover:translate-x-1 transition duration-300">→</span>
               </div>
-            </a>
+            </Link>
           )}
         </div>
         
