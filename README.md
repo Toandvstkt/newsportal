@@ -58,13 +58,6 @@ Tạo file `.env.local` trong thư mục root:
 JWT_SECRET="dinhvantoan1234"
 JWT_EXPIRE="24h"
 
-# API
-NEXT_PUBLIC_API_URL="http://localhost:3000/api"
-
-# Upload
-UPLOAD_DIR="./uploads"
-MAX_FILE_SIZE="5242880"
-
 ```
 
 ### 4. Chạy ứng dụng
@@ -104,17 +97,6 @@ Mở trình duyệt và truy cập: `http://localhost:3000`
 - **Role**: Registered User
 - **Permissions**: View content, comment, bookmark, personalize feed
 
-### 🎯 Demo Account
-- **Email**: `demo@news.com`
-- **Password**: `demo123`
-- **Role**: Registered User
-- **Permissions**: Standard user permissions
-
-### 👻 Guest Account
-- **Email**: `guest@news.com`
-- **Password**: `guest123`
-- **Role**: Guest
-- **Permissions**: Limited access (view content, search, share)
 
 ## 🔧 Cấu hình
 
@@ -205,10 +187,7 @@ npm run build        # Build production
 npm run start        # Chạy production server
 npm run lint         # Kiểm tra linting
 npm run lint:fix     # Tự động fix linting issues
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```
 
 ## 🙋‍♂️ Support
 
