@@ -54,19 +54,17 @@ pnpm install
 Tạo file `.env.local` trong thư mục root:
 
 ```env
-# App Configuration
-NEXT_PUBLIC_APP_NAME="News Portal"
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
+# JWT
+JWT_SECRET="dinhvantoan1234"
+JWT_EXPIRE="24h"
 
-# API Configuration
+# API
 NEXT_PUBLIC_API_URL="http://localhost:3000/api"
 
-# Database (nếu sử dụng)
-DATABASE_URL="your-database-url"
+# Upload
+UPLOAD_DIR="./uploads"
+MAX_FILE_SIZE="5242880"
 
-# Authentication (nếu cần)
-NEXTAUTH_SECRET="your-secret-key"
-NEXTAUTH_URL="http://localhost:3000"
 ```
 
 ### 4. Chạy ứng dụng
@@ -172,38 +170,6 @@ export default function NewComponent() {
   );
 }
 ```
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-
-```bash
-npm install -g vercel
-vercel
-```
-
-### Netlify
-
-```bash
-npm run build
-npm run export
-```
-
-### Docker
-
-```dockerfile
-FROM node:18-alpine
-
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
-
-EXPOSE 3000
-CMD ["npm", "start"]
-```
-
 ## 🐛 Troubleshooting
 
 ### Lỗi thường gặp
@@ -240,20 +206,6 @@ npm run start        # Chạy production server
 npm run lint         # Kiểm tra linting
 npm run lint:fix     # Tự động fix linting issues
 
-# Testing (nếu có)
-npm run test         # Chạy tests
-npm run test:watch   # Chạy tests in watch mode
-npm run test:coverage # Tạo coverage report
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -263,15 +215,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Nếu gặp vấn đề hoặc có câu hỏi, vui lòng:
 
 - Tạo issue trên GitHub
-- Contact: your-email@example.com
-- Documentation: [Link to docs]
-
-## 🎉 Acknowledgments
-
-- Next.js team cho framework tuyệt vời
-- Tailwind CSS cho utility-first CSS framework
-- React team cho library mạnh mẽ
-- Community contributors
+- Contact: toandv.sw@gmail.com
 
 ---
 
