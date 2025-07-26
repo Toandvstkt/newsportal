@@ -89,7 +89,7 @@ export default function LoginPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white flex items-center justify-center pt-18">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p>Đang kiểm tra trạng thái đăng nhập...</p>
@@ -99,7 +99,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white font-sans overflow-hidden flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white font-sans overflow-hidden flex items-center justify-center pt-18">
       
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 animate-pulse"></div>
@@ -124,17 +124,6 @@ export default function LoginPage() {
       </div>
 
       <div className={`relative z-10 w-full max-w-md mx-auto px-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        
-        <div className="mb-8 text-center">
-          <a 
-            href="/"
-            className="inline-flex items-center space-x-2 text-cyan-400 hover:text-white transition-colors duration-300 group"
-          >
-            <span className="transform group-hover:-translate-x-1 transition-transform duration-300">←</span>
-            <span>Về trang chủ</span>
-          </a>
-        </div>
-
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-1000"></div>
           
